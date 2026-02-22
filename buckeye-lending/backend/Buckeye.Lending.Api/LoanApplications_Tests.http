@@ -4,12 +4,12 @@
 GET {{HostAddress}}/api/loanapplications
 Accept: application/json
 
-### Get all with status filter
-GET {{HostAddress}}/api/loanapplications?loanType=Mortgage
+### Get all filtered by loan type (1=Mortgage)
+GET {{HostAddress}}/api/loanapplications?loanTypeId=1
 Accept: application/json
-htt
-### Get all with status and minAmount filters
-GET {{HostAddress}}/api/loanapplications?status=pending&minAmount=100000
+
+### Get all with minAmount filter
+GET {{HostAddress}}/api/loanapplications?minAmount=100000
 Accept: application/json
 
 ### Get loan application by ID (valid)
@@ -26,8 +26,9 @@ Content-Type: application/json
 
 {
   "applicantName": "David Kim",
+  "applicantId": 4,
+  "loanTypeId": 1,
   "loanAmount": 175000,
-  "loanType": "20-Year Fixed",
   "annualIncome": 82000
 }
 
@@ -37,8 +38,9 @@ Content-Type: application/json
 
 {
   "applicantName": "",
+  "applicantId": 1,
+  "loanTypeId": 1,
   "loanAmount": 175000,
-  "loanType": "20-Year Fixed",
   "annualIncome": 82000
 }
 
@@ -48,8 +50,9 @@ Content-Type: application/json
 
 {
   "applicantName": "Test User",
+  "applicantId": 1,
+  "loanTypeId": 3,
   "loanAmount": -5000,
-  "loanType": "15-Year Fixed",
   "annualIncome": 50000
 }
 
@@ -59,8 +62,9 @@ Content-Type: application/json
 
 {
   "applicantName": "Michael Chen",
+  "applicantId": 2,
+  "loanTypeId": 2,
   "loanAmount": 200000,
-  "loanType": "15-Year Fixed",
   "annualIncome": 125000
 }
 

@@ -13,9 +13,6 @@ public class LoanApplicationDto
     [Required, Column(TypeName = "decimal(12,2)")]
     public decimal LoanAmount { get; set; }
 
-    [Required, MaxLength(50)]
-    public string LoanType { get; set; } = string.Empty;
-
     [Column(TypeName = "decimal(12,2)")]
     public decimal AnnualIncome { get; set; }
 
@@ -29,4 +26,16 @@ public class LoanApplicationDto
 
     [MaxLength(500)]
     public string Notes { get; set; } = string.Empty;
+
+    // Foreign key — which applicant filed this application
+    public int ApplicantId { get; set; }
+    public Applicant? Applicant { get; set; }
+
+    // Foreign key — what type of loan (replaces the old string LoanType)
+    public int LoanTypeId { get; set; }
+    public LoanType? LoanType { get; set; }
+
+    // Navigation — one application can have many payments and notes
+    public List<LoanPayment> Payments { get; set; } = [];
+    public List<LoanNote> LoanNotes { get; set; } = [];
 }

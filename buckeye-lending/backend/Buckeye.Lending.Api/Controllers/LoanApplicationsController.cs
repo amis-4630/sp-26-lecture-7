@@ -18,18 +18,21 @@ public class LoanApplicationsController : ControllerBase
         _context = context;
     }
 
-    // GET: api/LoanApplicationDtos?status=pending&minAmount=100000
+    // GET: api/LoanApplications?loanTypeId=1&minAmount=100000
     [HttpGet]
     public async Task<ActionResult<IEnumerable<LoanApplicationDto>>> GetAll(
-        [FromQuery] string? loanType,
+        [FromQuery] int? loanTypeId,
         [FromQuery] decimal? minAmount,
         [FromQuery] decimal? maxAmount,
         [FromQuery] string? search)
     {
-        var query = _context.LoanApplications.AsQueryable<LoanApplicationDto>();
+        var query = _context.LoanApplications
+            .Include(l => l.Applicant)
+            .Include(l => l.LoanType)
+            .AsQueryable();
 
-        if (!string.IsNullOrWhiteSpace(loanType))
-            query = query.Where(l => l.LoanType.Equals(loanType, StringComparison.OrdinalIgnoreCase));
+        if (loanTypeId.HasValue)
+            query = query.Where(l => l.LoanTypeId == loanTypeId.Value);
 
         if (minAmount.HasValue)
             query = query.Where(l => l.LoanAmount >= minAmount.Value);
@@ -43,11 +46,17 @@ public class LoanApplicationsController : ControllerBase
         return Ok(await query.ToListAsync());
     }
 
-    // GET: api/LoanApplicationDtos/2
+    // GET: api/LoanApplications/2
     [HttpGet("{id}")]
     public async Task<ActionResult<LoanApplicationDto>> GetById(int id)
     {
-        var app = await _context.LoanApplications.FindAsync(id);
+        var app = await _context.LoanApplications
+            .Include(l => l.Applicant)
+            .Include(l => l.LoanType)
+            .Include(l => l.Payments)
+            .Include(l => l.LoanNotes)
+            .FirstOrDefaultAsync(l => l.Id == id);
+
         if (app == null)
             throw new KeyNotFoundException($"Loan application with ID {id} not found");
         return Ok(app);
@@ -98,6 +107,8 @@ public class LoanApplicationsController : ControllerBase
         existing.LoanAmount = updated.LoanAmount;
         existing.LoanType = updated.LoanType;
         existing.AnnualIncome = updated.AnnualIncome;
+        existing.ApplicantId = updated.ApplicantId;
+        existing.LoanTypeId = updated.LoanTypeId;
         // Don't update: Id, Status, SubmittedDate (server-controlled)
 
         await _context.SaveChangesAsync();
