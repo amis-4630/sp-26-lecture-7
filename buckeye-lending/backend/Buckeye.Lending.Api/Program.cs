@@ -4,6 +4,18 @@ using Buckeye.Lending.Api.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// CORS — allow the React dev server to call our API
+// Without this, the browser blocks cross-origin requests from localhost:5173 → localhost:5000
+builder.Services.AddCors(options =>
+{
+    options.AddDefaultPolicy(policy =>
+    {
+        policy.WithOrigins("http://localhost:5173")   // Vite dev server
+              .AllowAnyHeader()
+              .AllowAnyMethod();
+    });
+});
+
 // Add services to the container.
 builder.Services.AddControllers()
     .AddJsonOptions(options =>
@@ -56,6 +68,9 @@ if (app.Environment.IsDevelopment())
 
 // Use exception handler middleware
 app.UseExceptionHandler();
+
+// Enable CORS — must be called before MapControllers
+app.UseCors();
 
 app.UseHttpsRedirection();
 
