@@ -23,7 +23,7 @@ In Week 6 we had a single `LoanApplicationDto` entity with everything inline —
 
 ### Before (Week 6)
 
-```
+```text
 LoanApplicationDto
 ├── Id
 ├── ApplicantName (string)
@@ -38,7 +38,7 @@ LoanApplicationDto
 
 ### After (Week 7)
 
-```
+```text
 Applicant  ──1:N──►  LoanApplicationDto  ◄──1:N──  LoanType (lookup)
                           │
                           ├──1:N──►  LoanPayment
