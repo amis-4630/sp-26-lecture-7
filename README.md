@@ -22,3 +22,27 @@ GitHub has a feature called "forking" that allows you to create a copy of someon
    ```
 
 6. You can now make changes to the code, commit those changes, and push them back to your forked repository on GitHub.
+
+### Running Buckeye Lending
+
+#### Backend
+
+1. Navigate to the `buckeye-lending/backend/Buckeye.Lending.Api` directory:
+
+   ```bash
+   cd buckeye-lending/backend/Buckeye.Lending.Api
+   ```
+
+2. Build the backend with .NET:
+
+   ```bash
+   dotnet build
+   ```
+
+3. Run the backend:
+
+   ```bash
+   dotnet run
+   ```
+
+### Running Event Ticketing
