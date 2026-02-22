@@ -23,7 +23,7 @@ Previously the Event Ticketing API used a **static in-memory list** in the contr
 
 ### Before
 
-```
+```text
 EventsController (static List<Event>)
 └── Event
     ├── Id
@@ -37,7 +37,7 @@ EventsController (static List<Event>)
 
 ### After
 
-```
+```text
 Venue  ──1:N──►  Event  ◄──1:N──  EventCategory (lookup)
                    │
                    └──1:N──►  TicketOrder
