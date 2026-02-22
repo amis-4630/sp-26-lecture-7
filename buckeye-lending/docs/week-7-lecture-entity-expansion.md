@@ -4,6 +4,19 @@
 
 ---
 
+## Lecture Connection
+
+This code directly applies the four core concepts from the Week 7 lecture:
+
+| Lecture Topic         | Where you'll see it in the code                                                                               |
+| --------------------- | ------------------------------------------------------------------------------------------------------------- |
+| **DbContext & DbSet** | `LendingContext` now manages 5 `DbSet<>` properties — one per table                                           |
+| **LINQ**              | `LoanApplicationsController.GetAll()` chains `.Where()` and `.ToListAsync()` to filter and query              |
+| **Relationships**     | `ApplicantId`/`LoanTypeId` foreign keys + navigation properties wire up one-to-many across entities           |
+| **Eager Loading**     | `GetById()` uses `.Include(l => l.Applicant).Include(l => l.LoanType)` to pull related data in a single query |
+
+---
+
 ## Overview
 
 In Week 6 we had a single `LoanApplicationDto` entity with everything inline — applicant name, loan type as a string, a flat notes field. This week we normalize the model by extracting **four new entities** that introduce one-to-many relationships, lookup tables, and navigation properties.
@@ -34,19 +47,23 @@ Applicant  ──1:N──►  LoanApplicationDto  ◄──1:N──  LoanType 
 
 ---
 
+## Links Week 7 Learning Objectives
+
+---
+
 ## New Entities
 
 ### 1. `Applicant` — `Models/Applicant.cs`
 
 Extracts the person filing the loan into its own entity. One applicant can have many loan applications.
 
-| Property      | Type       | Notes                        |
-|---------------|------------|------------------------------|
-| `Id`          | `int`      | Primary key                  |
-| `Name`        | `string`   | Required, max 100 chars      |
-| `Email`       | `string`   | Required, max 150 chars      |
-| `Phone`       | `string`   | Max 20 chars                 |
-| `CreatedDate` | `DateTime` | Defaults to `DateTime.UtcNow`|
+| Property      | Type       | Notes                         |
+| ------------- | ---------- | ----------------------------- |
+| `Id`          | `int`      | Primary key                   |
+| `Name`        | `string`   | Required, max 100 chars       |
+| `Email`       | `string`   | Required, max 150 chars       |
+| `Phone`       | `string`   | Max 20 chars                  |
+| `CreatedDate` | `DateTime` | Defaults to `DateTime.UtcNow` |
 
 **Navigation:** `List<LoanApplicationDto> LoanApplications`
 
@@ -58,12 +75,12 @@ Extracts the person filing the loan into its own entity. One applicant can have 
 
 Replaces the raw `string LoanType` with a proper lookup/reference entity.
 
-| Property        | Type     | Notes                     |
-|-----------------|----------|---------------------------|
-| `Id`            | `int`    | Primary key               |
-| `Name`          | `string` | e.g. "Mortgage", "Auto"   |
-| `Description`   | `string` | Longer description         |
-| `MaxTermMonths` | `int`    | Max loan term in months    |
+| Property        | Type     | Notes                   |
+| --------------- | -------- | ----------------------- |
+| `Id`            | `int`    | Primary key             |
+| `Name`          | `string` | e.g. "Mortgage", "Auto" |
+| `Description`   | `string` | Longer description      |
+| `MaxTermMonths` | `int`    | Max loan term in months |
 
 **Navigation:** `List<LoanApplicationDto> LoanApplications`
 
@@ -71,12 +88,12 @@ Replaces the raw `string LoanType` with a proper lookup/reference entity.
 
 **Seed data:**
 
-| Id | Name     | MaxTermMonths |
-|----|----------|---------------|
-| 1  | Mortgage | 360           |
-| 2  | Auto     | 84            |
-| 3  | Personal | 60            |
-| 4  | Business | 120           |
+| Id  | Name     | MaxTermMonths |
+| --- | -------- | ------------- |
+| 1   | Mortgage | 360           |
+| 2   | Auto     | 84            |
+| 3   | Personal | 60            |
+| 4   | Business | 120           |
 
 ---
 
@@ -85,12 +102,12 @@ Replaces the raw `string LoanType` with a proper lookup/reference entity.
 Tracks individual payments made against an approved loan.
 
 | Property            | Type       | Notes                     |
-|---------------------|------------|---------------------------|
+| ------------------- | ---------- | ------------------------- |
 | `Id`                | `int`      | Primary key               |
-| `Amount`            | `decimal`  | Payment amount             |
-| `PaymentDate`       | `DateTime` | When the payment was made  |
+| `Amount`            | `decimal`  | Payment amount            |
+| `PaymentDate`       | `DateTime` | When the payment was made |
 | `Method`            | `string`   | "ACH", "Check", "Wire"    |
-| `LoanApplicationId` | `int`     | Foreign key                |
+| `LoanApplicationId` | `int`      | Foreign key               |
 
 **Navigation:** `LoanApplicationDto? LoanApplication`
 
@@ -102,13 +119,13 @@ Tracks individual payments made against an approved loan.
 
 Replaces the single `Notes` string with a collection of timestamped, authored comments.
 
-| Property            | Type       | Notes                     |
-|---------------------|------------|---------------------------|
-| `Id`                | `int`      | Primary key               |
-| `Author`            | `string`   | Who wrote the note         |
-| `Text`              | `string`   | Note content (max 1000)    |
-| `CreatedDate`       | `DateTime` | Timestamp                  |
-| `LoanApplicationId` | `int`      | Foreign key                |
+| Property            | Type       | Notes                   |
+| ------------------- | ---------- | ----------------------- |
+| `Id`                | `int`      | Primary key             |
+| `Author`            | `string`   | Who wrote the note      |
+| `Text`              | `string`   | Note content (max 1000) |
+| `CreatedDate`       | `DateTime` | Timestamp               |
+| `LoanApplicationId` | `int`      | Foreign key             |
 
 **Navigation:** `LoanApplicationDto? LoanApplication`
 
@@ -146,12 +163,12 @@ Replaces the single `Notes` string with a collection of timestamped, authored co
 
 ## New Controllers
 
-| Controller              | Route                                            | Methods    |
-|-------------------------|--------------------------------------------------|------------|
-| `ApplicantsController`  | `api/applicants`                                 | GET, POST  |
-| `LoanTypesController`   | `api/loantypes`                                  | GET        |
-| `PaymentsController`    | `api/loanapplications/{id}/payments`             | GET, POST  |
-| `NotesController`       | `api/loanapplications/{id}/notes`                | GET, POST  |
+| Controller             | Route                                | Methods   |
+| ---------------------- | ------------------------------------ | --------- |
+| `ApplicantsController` | `api/applicants`                     | GET, POST |
+| `LoanTypesController`  | `api/loantypes`                      | GET       |
+| `PaymentsController`   | `api/loanapplications/{id}/payments` | GET, POST |
+| `NotesController`      | `api/loanapplications/{id}/notes`    | GET, POST |
 
 **Key concept:** Nested routes — payments and notes are scoped under their parent loan application.
 
@@ -159,15 +176,15 @@ Replaces the single `Notes` string with a collection of timestamped, authored co
 
 ## EF Core Concepts Demonstrated
 
-| Concept                  | Where it appears                                      |
-|--------------------------|-------------------------------------------------------|
-| Foreign keys             | `ApplicantId`, `LoanTypeId`, `LoanApplicationId`     |
-| Navigation properties    | `Applicant.LoanApplications`, `LoanApplicationDto.Payments`, etc. |
-| One-to-many relationship | Applicant → Applications, Application → Payments      |
-| Lookup / reference table | `LoanType` entity                                     |
-| Eager loading (`Include`)| `LoanApplicationsController.GetById()`                |
-| Seed data (`HasData`)    | `LendingContext.OnModelCreating()`                    |
-| Cycle handling           | `ReferenceHandler.IgnoreCycles` in `Program.cs`       |
+| Concept                   | Where it appears                                                  |
+| ------------------------- | ----------------------------------------------------------------- |
+| Foreign keys              | `ApplicantId`, `LoanTypeId`, `LoanApplicationId`                  |
+| Navigation properties     | `Applicant.LoanApplications`, `LoanApplicationDto.Payments`, etc. |
+| One-to-many relationship  | Applicant → Applications, Application → Payments                  |
+| Lookup / reference table  | `LoanType` entity                                                 |
+| Eager loading (`Include`) | `LoanApplicationsController.GetById()`                            |
+| Seed data (`HasData`)     | `LendingContext.OnModelCreating()`                                |
+| Cycle handling            | `ReferenceHandler.IgnoreCycles` in `Program.cs`                   |
 
 ---
 
@@ -178,21 +195,22 @@ cd buckeye-lending/backend/Buckeye.Lending.Api
 dotnet run
 ```
 
-Then explore in Swagger UI or with curl:
+Then explore the API using **Swagger UI** and the **`.http` test files**:
 
-```bash
-# All loan types
-curl http://localhost:5000/api/loantypes
+### Option 1: Swagger UI
 
-# All applicants
-curl http://localhost:5000/api/applicants
+Open [http://localhost:5000/swagger](http://localhost:5000/swagger) in your browser. Expand each endpoint group and use **"Try it out"** to send requests interactively.
 
-# Single application with all related data
-curl http://localhost:5000/api/loanapplications/1
+### Option 2: `.http` Test Files (VS Code REST Client)
 
-# Notes for application 1
-curl http://localhost:5000/api/loanapplications/1/notes
+Open any of the `.http` files in VS Code and click **"Send Request"** above each request:
 
-# Payments for application 1
-curl http://localhost:5000/api/loanapplications/1/payments
-```
+| File                          | What it tests                             |
+| ----------------------------- | ----------------------------------------- |
+| `LoanApplications_Tests.http` | CRUD for loan applications with FK fields |
+| `Applicants_Tests.http`       | GET all/by-ID, POST new applicant         |
+| `LoanTypes_Tests.http`        | GET all loan types, GET by ID             |
+| `Payments_Tests.http`         | GET/POST payments nested under a loan app |
+| `Notes_Tests.http`            | GET/POST notes nested under a loan app    |
+
+> **Tip:** Try the error cases too (ID 99, empty name, negative amount) — observe the Problem Details (RFC 7807) responses.
