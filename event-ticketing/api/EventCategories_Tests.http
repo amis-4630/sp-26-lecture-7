@@ -1,0 +1,13 @@
+@HostAddress = http://localhost:5000
+
+### Get all event categories
+GET {{HostAddress}}/api/eventcategories
+Accept: application/json
+
+### Get category by ID
+GET {{HostAddress}}/api/eventcategories/1
+Accept: application/json
+
+### Get category by ID (not found - 404)
+GET {{HostAddress}}/api/eventcategories/99
+Accept: application/json

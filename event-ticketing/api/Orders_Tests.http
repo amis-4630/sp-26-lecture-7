@@ -1,0 +1,35 @@
+@HostAddress = http://localhost:5000
+
+### Get all ticket orders for an event
+GET {{HostAddress}}/api/events/1/orders
+Accept: application/json
+
+### Place a new ticket order
+POST {{HostAddress}}/api/events/1/orders
+Content-Type: application/json
+
+{
+  "customerName": "Jane Doe",
+  "customerEmail": "jane.doe@email.com",
+  "quantity": 2
+}
+
+### Place order with invalid quantity (0 - 400)
+POST {{HostAddress}}/api/events/1/orders
+Content-Type: application/json
+
+{
+  "customerName": "John Smith",
+  "customerEmail": "john.smith@email.com",
+  "quantity": 0
+}
+
+### Place order for non-existent event (404)
+POST {{HostAddress}}/api/events/99/orders
+Content-Type: application/json
+
+{
+  "customerName": "Jane Doe",
+  "customerEmail": "jane.doe@email.com",
+  "quantity": 1
+}

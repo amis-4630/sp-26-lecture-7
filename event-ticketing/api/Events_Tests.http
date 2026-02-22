@@ -1,0 +1,25 @@
+@HostAddress = http://localhost:5000
+
+### Get all events
+GET {{HostAddress}}/api/events
+Accept: application/json
+
+### Get all events filtered by category
+GET {{HostAddress}}/api/events?categoryId=1
+Accept: application/json
+
+### Get all events filtered by search term
+GET {{HostAddress}}/api/events?search=ohio
+Accept: application/json
+
+### Get all events filtered by category and search
+GET {{HostAddress}}/api/events?categoryId=1&search=ohio
+Accept: application/json
+
+### Get event by ID (includes venue, category, and orders)
+GET {{HostAddress}}/api/events/1
+Accept: application/json
+
+### Get event by ID (not found - 404)
+GET {{HostAddress}}/api/events/99
+Accept: application/json

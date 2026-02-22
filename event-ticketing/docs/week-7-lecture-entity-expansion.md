@@ -8,12 +8,12 @@
 
 This code directly applies the four core concepts from the Week 7 lecture:
 
-| Lecture Topic | Where you'll see it in the code |
-|---|---|
-| **DbContext & DbSet** | `EventsContext` manages 4 `DbSet<>` properties — one per table |
-| **LINQ** | `EventsController.GetAll()` chains `.Where()` and `.ToListAsync()` to filter by category and search text |
-| **Relationships** | `VenueId`/`EventCategoryId`/`EventId` foreign keys + navigation properties wire up one-to-many across entities |
-| **Eager Loading** | `GetAll()` and `GetById()` use `.Include(e => e.Venue).Include(e => e.EventCategory)` to pull related data in a single query |
+| Lecture Topic         | Where you'll see it in the code                                                                                              |
+| --------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
+| **DbContext & DbSet** | `EventsContext` manages 4 `DbSet<>` properties — one per table                                                               |
+| **LINQ**              | `EventsController.GetAll()` chains `.Where()` and `.ToListAsync()` to filter by category and search text                     |
+| **Relationships**     | `VenueId`/`EventCategoryId`/`EventId` foreign keys + navigation properties wire up one-to-many across entities               |
+| **Eager Loading**     | `GetAll()` and `GetById()` use `.Include(e => e.Venue).Include(e => e.EventCategory)` to pull related data in a single query |
 
 ---
 
@@ -52,7 +52,7 @@ Venue  ──1:N──►  Event  ◄──1:N──  EventCategory (lookup)
 Replaces the flat `Location` string with a proper entity. One venue hosts many events.
 
 | Property   | Type     | Notes                   |
-|------------|----------|-------------------------|
+| ---------- | -------- | ----------------------- |
 | `Id`       | `int`    | Primary key             |
 | `Name`     | `string` | Required, max 150 chars |
 | `Address`  | `string` | Required, max 200 chars |
@@ -64,14 +64,14 @@ Replaces the flat `Location` string with a proper entity. One venue hosts many e
 
 **Seed data:**
 
-| Id | Name              | Capacity |
-|----|-------------------|----------|
-| 1  | Ohio Stadium      | 102,780  |
-| 2  | Value City Arena  | 18,809   |
-| 3  | Mershon Auditorium| 2,477    |
-| 4  | Lower.com Field   | 20,371   |
-| 5  | Scioto Mile       | 5,000    |
-| 6  | Columbus Commons  | 3,000    |
+| Id  | Name               | Capacity |
+| --- | ------------------ | -------- |
+| 1   | Ohio Stadium       | 102,780  |
+| 2   | Value City Arena   | 18,809   |
+| 3   | Mershon Auditorium | 2,477    |
+| 4   | Lower.com Field    | 20,371   |
+| 5   | Scioto Mile        | 5,000    |
+| 6   | Columbus Commons   | 3,000    |
 
 ---
 
@@ -79,11 +79,11 @@ Replaces the flat `Location` string with a proper entity. One venue hosts many e
 
 Categorizes events into types (Sports, Music, Food & Festival).
 
-| Property      | Type     | Notes                   |
-|---------------|----------|-------------------------|
-| `Id`          | `int`    | Primary key             |
-| `Name`        | `string` | Required, max 50 chars  |
-| `Description` | `string` | Max 200 chars           |
+| Property      | Type     | Notes                  |
+| ------------- | -------- | ---------------------- |
+| `Id`          | `int`    | Primary key            |
+| `Name`        | `string` | Required, max 50 chars |
+| `Description` | `string` | Max 200 chars          |
 
 **Navigation:** `List<Event> Events`
 
@@ -91,11 +91,11 @@ Categorizes events into types (Sports, Music, Food & Festival).
 
 **Seed data:**
 
-| Id | Name           |
-|----|----------------|
-| 1  | Sports         |
-| 2  | Music          |
-| 3  | Food & Festival|
+| Id  | Name            |
+| --- | --------------- |
+| 1   | Sports          |
+| 2   | Music           |
+| 3   | Food & Festival |
 
 ---
 
@@ -104,7 +104,7 @@ Categorizes events into types (Sports, Music, Food & Festival).
 Tracks ticket purchases against an event. Many orders per event.
 
 | Property        | Type       | Notes                       |
-|-----------------|------------|-----------------------------|
+| --------------- | ---------- | --------------------------- |
 | `Id`            | `int`      | Primary key                 |
 | `CustomerName`  | `string`   | Required, max 100 chars     |
 | `CustomerEmail` | `string`   | Required, max 150 chars     |
@@ -151,25 +151,25 @@ Tracks ticket purchases against an event. Many orders per event.
 
 ## New Files
 
-| File | Purpose |
-|------|---------|
-| `Data/EventsContext.cs` | `DbContext` with 4 `DbSet<>` properties and all seed data |
-| `Models/Venue.cs` | Venue entity |
-| `Models/EventCategory.cs` | Event category lookup entity |
-| `Models/TicketOrder.cs` | Ticket order entity |
-| `Controllers/VenuesController.cs` | `GET /api/venues`, `GET /api/venues/{id}` |
+| File                                       | Purpose                                                     |
+| ------------------------------------------ | ----------------------------------------------------------- |
+| `Data/EventsContext.cs`                    | `DbContext` with 4 `DbSet<>` properties and all seed data   |
+| `Models/Venue.cs`                          | Venue entity                                                |
+| `Models/EventCategory.cs`                  | Event category lookup entity                                |
+| `Models/TicketOrder.cs`                    | Ticket order entity                                         |
+| `Controllers/VenuesController.cs`          | `GET /api/venues`, `GET /api/venues/{id}`                   |
 | `Controllers/EventCategoriesController.cs` | `GET /api/eventcategories`, `GET /api/eventcategories/{id}` |
-| `Controllers/OrdersController.cs` | `GET/POST /api/events/{id}/orders` (nested route) |
+| `Controllers/OrdersController.cs`          | `GET/POST /api/events/{id}/orders` (nested route)           |
 
 ---
 
 ## New API Endpoints
 
-| Controller                | Route                           | Methods   |
-|---------------------------|---------------------------------|-----------|
-| `VenuesController`        | `api/venues`                    | GET       |
-| `EventCategoriesController`| `api/eventcategories`          | GET       |
-| `OrdersController`        | `api/events/{id}/orders`        | GET, POST |
+| Controller                  | Route                    | Methods   |
+| --------------------------- | ------------------------ | --------- |
+| `VenuesController`          | `api/venues`             | GET       |
+| `EventCategoriesController` | `api/eventcategories`    | GET       |
+| `OrdersController`          | `api/events/{id}/orders` | GET, POST |
 
 **Key concept:** Nested routes — orders are scoped under their parent event.
 
@@ -177,17 +177,17 @@ Tracks ticket purchases against an event. Many orders per event.
 
 ## EF Core Concepts Demonstrated
 
-| Concept                   | Where it appears                                         |
-|---------------------------|----------------------------------------------------------|
-| DbContext & DbSet         | `EventsContext` with 4 `DbSet<>` properties              |
-| LINQ queries              | `.Where()` chains in `EventsController.GetAll()`         |
-| Foreign keys              | `VenueId`, `EventCategoryId`, `EventId`                  |
-| Navigation properties     | `Venue.Events`, `Event.TicketOrders`, etc.               |
-| One-to-many relationships | Venue → Events, Event → TicketOrders                     |
-| Lookup / reference tables | `Venue` and `EventCategory` entities                     |
-| Eager loading (`Include`) | `EventsController.GetAll()` and `GetById()`              |
-| Seed data (`HasData`)     | `EventsContext.OnModelCreating()`                        |
-| Cycle handling            | `ReferenceHandler.IgnoreCycles` in `Program.cs`          |
+| Concept                   | Where it appears                                 |
+| ------------------------- | ------------------------------------------------ |
+| DbContext & DbSet         | `EventsContext` with 4 `DbSet<>` properties      |
+| LINQ queries              | `.Where()` chains in `EventsController.GetAll()` |
+| Foreign keys              | `VenueId`, `EventCategoryId`, `EventId`          |
+| Navigation properties     | `Venue.Events`, `Event.TicketOrders`, etc.       |
+| One-to-many relationships | Venue → Events, Event → TicketOrders             |
+| Lookup / reference tables | `Venue` and `EventCategory` entities             |
+| Eager loading (`Include`) | `EventsController.GetAll()` and `GetById()`      |
+| Seed data (`HasData`)     | `EventsContext.OnModelCreating()`                |
+| Cycle handling            | `ReferenceHandler.IgnoreCycles` in `Program.cs`  |
 
 ---
 

@@ -1,0 +1,13 @@
+@HostAddress = http://localhost:5000
+
+### Get all venues
+GET {{HostAddress}}/api/venues
+Accept: application/json
+
+### Get venue by ID (includes its events)
+GET {{HostAddress}}/api/venues/1
+Accept: application/json
+
+### Get venue by ID (not found - 404)
+GET {{HostAddress}}/api/venues/99
+Accept: application/json
