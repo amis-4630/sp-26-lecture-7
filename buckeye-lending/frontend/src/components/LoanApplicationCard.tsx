@@ -26,7 +26,7 @@ function LoanApplicationCard({ loan }: LoanApplicationCardProps) {
       className={`${styles.card} ${loan.status === "Denied" ? styles.denied : ""}`}
     >
       <div className={styles.header}>
-        <span className={styles.loanType}>{loan.loanType}</span>
+        <span className={styles.loanType}>{loan.loanType.name}</span>
         <span className={`${styles.status} ${getStatusClass(loan.status)}`}>
           {loan.status}
         </span>
