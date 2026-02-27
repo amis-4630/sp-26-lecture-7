@@ -20,10 +20,12 @@ public class OrdersController : ControllerBase
     [HttpGet]
     public async Task<ActionResult<IEnumerable<TicketOrder>>> GetAll(int eventId)
     {
-        var orders = await _context.TicketOrders
-            .Where(o => o.EventId == eventId)
-            .OrderByDescending(o => o.OrderDate)
-            .ToListAsync();
+        var orders = await (
+            from o in _context.TicketOrders
+            where o.EventId == eventId
+            orderby o.OrderDate descending
+            select o
+        ).ToListAsync();
 
         return Ok(orders);
     }
