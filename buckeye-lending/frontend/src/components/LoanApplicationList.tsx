@@ -1,14 +1,14 @@
-import type { LoanApplication } from "../data/loanApplications";
+import { useLoanContext } from "../contexts/LoanContext";
 import LoanApplicationCard from "./LoanApplicationCard";
 
-type LoanApplicationListProps = {
-  loans: LoanApplication[];
-};
+// No props — reads filtered loans directly from context.
+// Prop drilling eliminated: the parent no longer computes or passes the list.
+function LoanApplicationList() {
+  const { filteredLoans } = useLoanContext();
 
-function LoanApplicationList({ loans }: LoanApplicationListProps) {
   return (
     <div className="loan-grid">
-      {loans.map((loan) => (
+      {filteredLoans.map((loan) => (
         <LoanApplicationCard key={loan.id} loan={loan} />
       ))}
     </div>

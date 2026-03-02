@@ -72,7 +72,13 @@ app.UseExceptionHandler();
 // Enable CORS — must be called before MapControllers
 app.UseCors();
 
-app.UseHttpsRedirection();
+// Only redirect to HTTPS in production.
+// In development, HTTPS redirect causes preflight (OPTIONS) requests to receive a 307,
+// and browsers cannot follow redirects for CORS preflights — resulting in a 403 block.
+if (!app.Environment.IsDevelopment())
+{
+    app.UseHttpsRedirection();
+}
 
 app.UseAuthorization();
 

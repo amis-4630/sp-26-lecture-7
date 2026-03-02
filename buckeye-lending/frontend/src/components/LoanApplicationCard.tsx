@@ -1,4 +1,5 @@
 import type { LoanApplication } from "../data/loanApplications";
+import ActionButtons from "./ActionButtons";
 import styles from "./LoanApplicationCard.module.css";
 
 type LoanApplicationCardProps = {
@@ -15,6 +16,8 @@ function getStatusClass(status: string): string {
       return styles.statusPending;
     case "Under Review":
       return styles.statusReview;
+    case "Flagged":
+      return styles.statusFlagged;
     default:
       return "";
   }
@@ -46,9 +49,8 @@ function LoanApplicationCard({ loan }: LoanApplicationCardProps) {
         <p className={styles.date}>
           Submitted: {new Date(loan.submittedDate).toLocaleDateString()}
         </p>
-        <button className={styles.button} disabled={loan.status === "Denied"}>
-          {loan.status === "Denied" ? "Application Closed" : "View Details"}
-        </button>
+        {/* ActionButtons reads dispatch directly from context — no prop drilling */}
+        <ActionButtons loanId={loan.id} currentStatus={loan.status} />
       </div>
     </div>
   );
