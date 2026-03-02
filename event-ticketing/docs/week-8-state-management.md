@@ -45,6 +45,7 @@ src/
     EventContext.tsx          ← Provider component + EventContext export
     useEventContext.ts        ← custom hook (separated for Vite Fast Refresh)
   components/
+    CartSummary.tsx            ← cart total display + CLEAR_CART (reads context directly)
     EventCard.tsx             ← full event card with badges + TicketCounter
     TicketCounter.tsx         ← − / + ticket selection (reads context directly)
     EventList.tsx             ← reads filteredEvents from context (no props)
@@ -205,9 +206,13 @@ The hook lives in a **separate file** from the provider. This is required by Vit
 
 ### How Components Use It
 
-**`App.tsx`** — wraps the tree in the provider; `CartSummary` reads context directly:
+**`App.tsx`** — wraps the tree in the provider; imports `CartSummary` and `EventList` as separate components:
 
 ```tsx
+import { EventProvider } from "./contexts/EventContext";
+import CartSummary from "./components/CartSummary";
+import { EventList } from "./components/EventList";
+
 function App() {
   return (
     <EventProvider>
@@ -217,6 +222,28 @@ function App() {
         <EventList /> {/* reads filteredEvents */}
       </div>
     </EventProvider>
+  );
+}
+```
+
+**`CartSummary.tsx`** — reads `cartTotal` from context and dispatches `CLEAR_CART`:
+
+```tsx
+import { useEventContext } from "../contexts/useEventContext";
+
+export default function CartSummary() {
+  const { state, dispatch } = useEventContext();
+  if (state.cartTotal === 0) return null;
+
+  return (
+    <div className="cart-summary">
+      <span>
+        🎟 {state.cartTotal} ticket{state.cartTotal !== 1 ? "s" : ""} selected
+      </span>
+      <button onClick={() => dispatch({ type: "CLEAR_CART" })}>
+        Clear Cart
+      </button>
+    </div>
   );
 }
 ```
@@ -278,11 +305,13 @@ App (imports hardcoded events array)
 ```
 EventProvider (owns state + dispatch)
   └── App
-        ├── CartSummary (reads cartTotal, dispatches CLEAR_CART)
+        ├── CartSummary (own component — reads cartTotal, dispatches CLEAR_CART)
         └── EventList (reads filteredEvents from context)
               └── EventCard (event prop only — for display data)
                     └── TicketCounter (reads ticketCounts, dispatches ADD/REMOVE)
 ```
+
+`CartSummary` lives in its own file (`components/CartSummary.tsx`) rather than being defined inline in `App.tsx`. This keeps `App.tsx` focused solely on composing the provider and top-level layout.
 
 `EventList` and `EventCard` never touch `ticketCounts` or `dispatch` — they are not in the data path for those concerns. `TicketCounter` reaches into context itself, exactly where it needs to.
 

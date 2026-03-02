@@ -38,6 +38,7 @@ src/
   contexts/
     LoanContext.tsx          ← Provider + useLoanContext() hook
   components/
+    Dashboard.tsx            ← page layout, header, filters, notification badge
     ActionButtons.tsx        ← Approve/Deny/Flag buttons (reads context directly)
 ```
 
@@ -202,15 +203,31 @@ export function useLoanContext() {
 
 ### How Components Use It
 
-**`App.tsx`** — wraps the tree with the provider; `Dashboard` reads context directly:
+**`App.tsx`** — wraps the tree with the provider; imports `Dashboard` as a separate component:
 
 ```tsx
+import { LoanProvider } from "./contexts/LoanContext";
+import Dashboard from "./components/Dashboard";
+
 function App() {
   return (
     <LoanProvider>
       <Dashboard />
     </LoanProvider>
   );
+}
+```
+
+**`Dashboard.tsx`** — reads state and dispatch from context; owns the page layout, header, filter bar, and notification badge:
+
+```tsx
+import { useLoanContext } from "../contexts/LoanContext";
+import LoanApplicationList from "./LoanApplicationList";
+
+export default function Dashboard() {
+  const { state, dispatch, filteredLoans, loanTypes } = useLoanContext();
+  // renders header, notification badge, type filter buttons,
+  // LoanApplicationList, and loan count
 }
 ```
 
@@ -262,11 +279,14 @@ App (owns state + handlers)
 
 ```
 LoanProvider (owns state + dispatch)
-  └── Dashboard (reads context)
-        └── LoanApplicationList (reads context)
-              └── LoanApplicationCard (loan prop only)
-                    └── ActionButtons (reads context — dispatches directly)
+  └── App
+        └── Dashboard (own component — reads context, renders header + filters)
+              └── LoanApplicationList (reads context)
+                    └── LoanApplicationCard (loan prop only)
+                          └── ActionButtons (reads context — dispatches directly)
 ```
+
+`Dashboard` lives in its own file (`components/Dashboard.tsx`) rather than being defined inline in `App.tsx`. This keeps `App.tsx` focused solely on wrapping the provider.
 
 Intermediate components (`LoanApplicationList`, `LoanApplicationCard`) no longer carry props they don't use. Each component only receives what it actually needs.
 
