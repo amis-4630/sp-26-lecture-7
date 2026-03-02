@@ -1,4 +1,4 @@
-import { createContext, useContext, useReducer, type ReactNode } from "react";
+import { createContext, useReducer, type ReactNode } from "react";
 import { eventReducer } from "../reducers/eventReducer";
 import type { EventAppState, EventAction } from "../types/eventActions";
 import type { Event } from "../data/events";
@@ -10,7 +10,7 @@ type EventContextType = {
   filteredEvents: Event[];
 };
 
-const EventContext = createContext<EventContextType | null>(null);
+export const EventContext = createContext<EventContextType | null>(null);
 
 const initialState: EventAppState = {
   events: initialEvents,
@@ -34,12 +34,4 @@ export function EventProvider({ children }: { children: ReactNode }) {
       {children}
     </EventContext.Provider>
   );
-}
-
-export function useEventContext() {
-  const context = useContext(EventContext);
-  if (!context) {
-    throw new Error("useEventContext must be used within an EventProvider");
-  }
-  return context;
 }

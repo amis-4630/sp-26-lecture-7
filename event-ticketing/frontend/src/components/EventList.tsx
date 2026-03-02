@@ -1,4 +1,4 @@
-import { useEventContext } from "../contexts/EventContext";
+import { useEventContext } from "../contexts/useEventContext";
 import { EventCard } from "./EventCard";
 
 // No props — reads filtered events directly from context.

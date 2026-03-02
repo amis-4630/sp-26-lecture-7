@@ -1,4 +1,5 @@
-import { EventProvider, useEventContext } from "./contexts/EventContext";
+import { EventProvider } from "./contexts/EventContext";
+import { useEventContext } from "./contexts/useEventContext";
 import { EventList } from "./components/EventList";
 import "./App.css";
 

@@ -1,4 +1,4 @@
-import { useEventContext } from "../contexts/EventContext";
+import { useEventContext } from "../contexts/useEventContext";
 
 interface TicketCounterProps {
   eventId: number;
