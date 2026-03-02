@@ -1,18 +1,18 @@
-import { Event } from "../data/events";
+import { useEventContext } from "../contexts/EventContext";
+import { EventCard } from "./EventCard";
 
-interface EventListProps {
-  events: Event[];
-}
+// No props — reads filtered events directly from context.
+export function EventList() {
+  const { filteredEvents } = useEventContext();
 
-export function EventList({ events }: EventListProps) {
-  if (!events || events.length === 0) {
+  if (!filteredEvents || filteredEvents.length === 0) {
     return <p>No events available.</p>;
   }
 
   return (
     <div className="event-list">
-      {events.map((event) => (
-        <h2>{event.title}</h2>
+      {filteredEvents.map((event) => (
+        <EventCard key={event.id} event={event} />
       ))}
     </div>
   );
