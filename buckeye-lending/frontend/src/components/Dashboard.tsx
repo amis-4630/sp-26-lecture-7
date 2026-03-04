@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import { useLoanContext } from "../contexts/LoanContext";
 import LoanApplicationList from "./LoanApplicationList";
 
@@ -9,8 +10,15 @@ export default function Dashboard() {
   return (
     <div className="app">
       <header>
-        <h1>Buckeye Lending</h1>
-        <p>Loan Application Dashboard</p>
+        <div className="header-top">
+          <div>
+            <h1>Buckeye Lending</h1>
+            <p>Loan Application Dashboard</p>
+          </div>
+          <Link to="/apply" className="apply-link">
+            Apply
+          </Link>
+        </div>
         {state.notificationCount > 0 && (
           <button
             className="notification-badge"
